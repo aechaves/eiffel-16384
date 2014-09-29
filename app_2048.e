@@ -8,89 +8,111 @@ class
 
 inherit
 
-	ARGUMENTS
+	WSF_DEFAULT_RESPONSE_SERVICE
+		redefine
+			initialize
+		end
 
 create
-	make
-
-feature {NONE} -- Initialization
-
-	make
-
-
-			-- Run application.
-		do
-			print ("|----2048--------|%N")
-			print ("|                |%N")
-			print ("|     MENU       |%N")
-			print ("|                |%N")
-			print ("|q : QUIT        |%N")
-			print ("|a : LEFT        |%N")
-			print ("|d : RIGHT       |%N")
-			print ("|w : UP          |%N")
-			print ("|s : DOWN        |%N")
-			print ("|----------------|%N")
-			create controller.make
-			io.putstring (controller.board.out)
-			from
-
-			until
-			 	controller.is_finished or  io.last_character.is_equal ('q')
-			loop
-				--read character
-				io.read_character
-				--move left
-				if io.last_character.is_equal ('a') then
-					if controller.board.can_move_left then
-						controller.left
-						--update board
-						io.put_string (controller.board.out)
-					end
-
-				end
-				--move down
-				if io.last_character.is_equal ('s') then
-					if controller.board.can_move_down then
-						controller.down
-						--update board
-						io.put_string (controller.board.out)
-					end
-				end
-				--move right
-				if io.last_character.is_equal ('d') then
-					if controller.board.can_move_right then
-						controller.right
-						--update board
-						io.put_string (controller.board.out)
-					end
-				end
-				--move up
-				if io.last_character.is_equal ('w') then
-					if controller.board.can_move_up then
-						controller.up
-						--update board
-						io.put_string (controller.board.out)
-					end
-				end
-				--exit
-
-			end
-			--finish game
-			if	controller.is_finished 	then
-				if controller.board.is_winning_board then
-					print("CONGRATULATIONS!!!!!!! YOU WON!!!!!!!! :D")
-				else
-					print("you lost :'( ")
-				end
-			else
-				print("q pressed, exit game")
-			end
-
-		end
+	make_and_launch
 
 feature -- Implementation
 
 	controller: CONTROLLER_2048
 			-- It takes care of the control of the 2048 game.
+
+
+feature {NONE} -- Execution
+
+	response (req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
+			-- Computed response message.
+		do
+			--| It is now returning a WSF_HTML_PAGE_RESPONSE
+			--| Since it is easier for building html page
+			create Result.make
+			Result.set_title ("2048")
+			--| Check if the request contains a parameter named "user"
+			--| this could be a query, or a form parameter
+			if attached req.string_item ("user") as l_user then
+
+				if (l_user.is_equal ("a") and controller.board.can_move_left) then
+					controller.left
+					Result.set_body( show_board_and_form )
+				end
+				if (l_user.is_equal ("d") and controller.board.can_move_right) then
+					controller.right
+					Result.set_body( show_board_and_form )
+				end
+				if (l_user.is_equal ("w") and controller.board.can_move_up) then
+					controller.up
+					Result.set_body( show_board_and_form )
+				end
+				if (l_user.is_equal ("s") and controller.board.can_move_down) then
+					controller.down
+					Result.set_body( show_board_and_form )
+				end
+
+			else
+				create controller.make
+				Result.set_body(  show_board_and_form )
+
+			end
+
+		end
+
+feature {NONE} -- Initialization
+
+	initialize
+		do
+				--| Uncomment the following line, to be able to load options from the file ewf.ini
+			create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI} service_options.make_from_file ("ewf.ini")
+
+				--| You can also uncomment the following line if you use the Nino connector
+				--| so that the server listens on port 9999
+				--| quite often the port 80 is already busy
+--			set_service_option ("port", 9999)
+
+				--| Uncomment next line to have verbose option if available
+--			set_service_option ("verbose", True)
+
+				--| If you don't need any custom options, you are not obliged to redefine `initialize'
+			Precursor
+		end
+
+feature {NONE} --Show board with html table
+
+
+	show_board_and_form : STRING
+	local
+		i,j : INTEGER
+		table, form : STRING
+	do
+		table:=""
+		table.append ("<table id="+"board"+" width="+"300"+" height="+"300"+">")
+		from
+			i := 1
+		until
+			i>4
+		loop
+			table.append ("<tr>")
+			from
+				j:=1
+			until
+				j>4
+			loop
+				table.append ("<td>"+controller.board.elements.item (i, j).value.out+"</td>")
+				j:=j+1
+			end
+			i:=i+1
+			table.append ("</tr>")
+		end
+		table.append ("</table>")
+		table.append ("<br>")
+		table.append ("<form action="+"/"+" method="+"POST"+">")
+		table.append ("<input type="+"text"+" name="+"user"+">")
+		table.append ("<input type="+"submit"+" value="+"Mover"+">")
+		table.append ("</form>")
+		Result := table
+	end
 
 end
