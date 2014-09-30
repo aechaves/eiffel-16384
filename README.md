@@ -7,7 +7,7 @@ What is 16384?
 -------------
 
 [2048] [2048] is a popular web game created by [Gabriele Cirulli] [gabriele], where you must combine tiles of the same number repeatedly until you get a tile with the number 2048.
-The 16384 variant changes the board from 4x4 to 8x8, and changes the winning condition: you have to get a tile with the number 16384. This variant is writtten by [Name] [name] and can also be played online [here] [16384].
+The 16384 variant changes the board from 4x4 to 8x8, and changes the winning condition: you have to get a tile with the number 16384. This variant can be played online [here] [16384].
 
 Goals
 -----
@@ -52,7 +52,7 @@ Guide
 
  - Once the game is implemented and released, this page will be updated.
 
-20848 - Installation
+2048 - Installation
 ====================
 
 2048 - Using the provided binaries
@@ -84,5 +84,4 @@ Guide
 [Design-by-contract]: http://en.wikipedia.org/wiki/Design_by_contract
 [TDD]: http://en.wikipedia.org/wiki/Test-driven_development
 [BDD]: http://en.wikipedia.org/wiki/Behavior-driven_development
-[name]: http://16384creatorlink.com
-[16384]: http://16384gamelink.com
+[16384]: http://annimon.github.io/16384/
