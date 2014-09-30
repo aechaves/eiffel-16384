@@ -97,13 +97,13 @@ feature -- Initialisation
 
 feature -- Status report
 
-	rows: INTEGER = 4
+	rows: INTEGER = 8
 		-- Number of rows in the board
-		-- Should be constantly 4
+		-- Should be constantly 8
 
-	columns: INTEGER = 4
+	columns: INTEGER = 8
 		-- Number of columns in the board
-		-- Should be constantly 4
+		-- Should be constantly 8
 
 	nr_of_filled_cells: INTEGER
 		-- Returns the number of filled cells in the board
@@ -170,14 +170,14 @@ feature -- Status report
 	is_full: BOOLEAN
 		-- Indicates if all cells in the board are set or not
 		do
-			Result := (nr_of_filled_cells = 16) -- Board is full when all 16 cells are filled
-		ensure Result = (nr_of_filled_cells = 16)
+			Result := (nr_of_filled_cells = 64) -- Board is full when all 64 cells are filled
+		ensure Result = (nr_of_filled_cells = 64)
 		end
 
 	is_empty:BOOLEAN
 		-- Indicates if all cells in the board are not set
 		do
-			Result := (nr_of_filled_cells = 0) -- Board is full when all 16 cells are filled
+			Result := (nr_of_filled_cells = 0) -- Board is full when all 64 cells are filled
 		ensure Result = (nr_of_filled_cells = 0)
 		end
 	can_move_left: BOOLEAN
@@ -314,8 +314,6 @@ feature -- Status report
 
 	is_winning_board : BOOLEAN
 		-- Indicates whether 2048 is present in the board, indicating that the board is a winning board
-		require
-			elements.height=4 and elements.width=4
 		local
 			i,j : INTEGER
 			is_winning : BOOLEAN
@@ -323,12 +321,12 @@ feature -- Status report
 			from
 				i := 1
 			until
-				i > 4 or is_winning
+				i > rows or is_winning
 			loop
 				from
 					j := 1
 				until
-					j > 4 or is_winning
+					j > columns or is_winning
 				loop
 					if (elements.item (i,j).value = 2048) then
 						is_winning := True
@@ -345,7 +343,7 @@ feature -- Status setting
 	set_cell (row: INTEGER; col: INTEGER; value: INTEGER)
 			-- Set cell in [row,col] position with a given value
 		require
-			valid_range : (row>=1 and row<=4 and col>=1 and col<=4)
+			valid_range : (row>=1 and row<=8 and col>=1 and col<=8)
 			valid_value : ((create {CELL_2048}.make).is_valid_value (value))
 		do
 			elements.item (row,col).set_value (value) --Set the new value in cell
