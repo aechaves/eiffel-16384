@@ -82,23 +82,23 @@ feature -- Movement commands
 			from
 				j := 1
 			until
-				j > 4
+				j > board.columns
 			loop
 				from
 					i := 1
 				until
-					i >= 4
+					i >= board.rows
 				loop
 					if board.elements.item (i, j).value /= 0 then
 						k := i + 1;
 						from
 								-- search for the next element /= 0
 						until
-							(k > 4) or (board.elements.item (k, j).value /= 0)
+							(k > board.rows) or (board.elements.item (k, j).value /= 0)
 						loop
 							k := k + 1;
 						end
-						if (k <= 4) then
+						if (k <= board.rows) then
 							if (board.elements.item (i, j).value = board.elements.item (k, j).value) then
 								board.set_cell (i, j, (board.elements.item (k, j).value + board.elements.item (i, j).value))
 								board.set_cell (k, j, 0)
@@ -119,23 +119,23 @@ feature -- Movement commands
 			from --
 				j := 1
 			until
-				j > 4
+				j > board.columns
 			loop
 				from
 					i := 1
 				until
-					i >= 4
+					i >= board.rows
 				loop
 					if board.elements.item (i, j).value = 0 then
 						k := i + 1;
 						from
 								-- search for the next element /= 0
 						until
-							(k > 4) or (board.elements.item (k, j).value /= 0)
+							(k > board.rows) or (board.elements.item (k, j).value /= 0)
 						loop
 							k := k + 1;
 						end
-						if (k <= 4) then
+						if (k <= board.rows) then
 							board.set_cell (i, j, board.elements.item (k, j).value)
 							board.set_cell (k, j, 0)
 							i := i + 1
@@ -163,10 +163,10 @@ feature -- Movement commands
 			from -- columns
 				i := 1
 			until
-				i > 4
+				i > board.columns
 			loop
 				from -- rows (from the lowermost to the uppermost row)
-					j := 4
+					j := board.rows
 				until
 					j <= 1
 				loop
@@ -198,17 +198,17 @@ feature -- Movement commands
 			from -- columns
 				i := 1
 			until
-				i > 4
+				i > board.columns
 			loop
 				from -- rows (from the lowermost to the uppermost row)
-					j := 4
+					j := board.rows
 				until
 					j = 1
 				loop
 					if ((board.elements.item (j, i).value = 0) and (board.elements.item (j - 1, i).value) /= 0) then -- if j,i = 0 and the one above it is =/ 0
 						board.set_cell (j, i, board.elements.item (j - 1, i).value)
 						board.set_cell (j - 1, i, 0)
-						if (j < 4) then --if not at the lowermost cell
+						if (j < board.rows) then --if not at the lowermost cell
 							j := j + 1; -- continues moving downward until it reaches an ocupied cell
 						else
 							j := j - 1; -- continues moving upward
@@ -234,22 +234,22 @@ feature -- Movement commands
 			from
 				i := 1
 			until
-				i > 4
+				i > board.rows
 			loop
 				from
 					j := 1
 				until
-					j >= 4
+					j >= board.columns
 				loop
 					if board.elements.item (i, j).value /= 0 then
 						k := j + 1
 						from
 						until
-							(k > 4) or (board.elements.item (i, k).value /= 0)
+							(k > board.columns) or (board.elements.item (i, k).value /= 0)
 						loop
 							k := k + 1
 						end
-						if (k <= 4) then
+						if (k <= board.columns) then
 							if (board.elements.item (i, j).value = board.elements.item (i, k).value) then
 								board.set_cell (i, j, (board.elements.item (i, k).value + board.elements.item (i, j).value))
 								board.set_cell (i, k, 0)
@@ -270,12 +270,12 @@ feature -- Movement commands
 			from --
 				i := 1
 			until
-				i > 4
+				i > board.rows
 			loop
 				from
 					j := 1
 				until
-					j >= 4
+					j >= board.columns
 				loop
 					if (board.elements.item (i, j).value = 0) and (board.elements.item (i, j + 1).value /= 0) then
 						board.set_cell (i, j, board.elements.item (i, j + 1).value)
@@ -307,10 +307,10 @@ feature -- Movement commands
 			from
 				i := 1
 			until
-				i > 4
+				i > board.rows
 			loop
 				from
-					j := 4
+					j := board.columns
 				until
 					j <= 1
 				loop
@@ -343,10 +343,10 @@ feature -- Movement commands
 			from --
 				i := 1
 			until
-				i > 4
+				i > board.rows
 			loop
 				from
-					j := 4
+					j := board.columns
 				until
 					j < 1
 				loop
@@ -373,7 +373,7 @@ feature {NONE} -- Auxiliary routines
 			column: INTEGER
 		do
 			from
-				column := 4
+				column := board.columns
 			until
 				column < 1
 			loop
@@ -423,7 +423,7 @@ feature {NONE} -- Auxiliary routines
 		end
 
 Feature {SET_RANDOM_FREE_CELL_AT_CONTROLLER}
-set_random_free_cell
+	set_random_free_cell
 		require
 			not board.is_full
 		local
@@ -433,15 +433,15 @@ set_random_free_cell
 		do
 			--initialize random seed
 		    create random_sequence.set_seed(get_random_seed)
-			random_cell_row := get_random(random_sequence, 4) + 1;
-			random_cell_col := get_random(random_sequence, 4) + 1;
+			random_cell_row := get_random(random_sequence, board.rows) + 1;
+			random_cell_col := get_random(random_sequence, board.columns) + 1;
 		    from
 		    until
 		    	board.elements.item(random_cell_row, random_cell_col).is_available = True
 		    loop
 		    	--generate a random position
-				random_cell_row := get_random(random_sequence, 4) + 1;
-				random_cell_col := get_random(random_sequence, 4) + 1;
+				random_cell_row := get_random(random_sequence, board.rows) + 1;
+				random_cell_col := get_random(random_sequence, board.columns) + 1;
 		    end
 			-- set at cell random number
 			board.set_cell(random_cell_row, random_cell_col, random_number_two_or_four(random_sequence))

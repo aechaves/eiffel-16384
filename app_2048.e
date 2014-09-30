@@ -92,13 +92,13 @@ feature {NONE} --Show board with html table
 		from
 			i := 1
 		until
-			i>4
+			i>controller.board.rows
 		loop
 			table.append ("<tr>")
 			from
 				j:=1
 			until
-				j>4
+				j>controller.board.columns
 			loop
 				table.append ("<td>"+controller.board.elements.item (i, j).value.out+"</td>")
 				j:=j+1
