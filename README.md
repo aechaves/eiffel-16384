@@ -1,5 +1,5 @@
 Eiffel-16384
-==========
+============
 
 Eiffel-16384 is an Eiffel implementation of a variant of the popular game 2048. The implementation is written entirely in Eiffel, using Design by Contract. It is developed in the context of a course of distributed software engineering.
 
