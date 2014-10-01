@@ -21,7 +21,7 @@ feature -- Test routines
 			c: CONTROLLER_2048
 		do
 			create c.make
-			assert ("Test with make constructor", c.last_random_cell_coordinates = c.coord_last_random_cell)
+			assert ("Correct", c.last_random_cell_coordinates = c.coord_last_random_cell)
 		end
 
 	test_last_random_cell_coordinates_make_empty
@@ -32,7 +32,7 @@ feature -- Test routines
 		do
 			create b.make
 			create c.make_with_board (b)
-			assert("asdasd", c.last_random_cell_coordinates = c.coord_last_random_cell)
+			assert("Correct", c.last_random_cell_coordinates = c.coord_last_random_cell)
 		end
 
 	test_last_random_cell_coordinates_magic
@@ -42,7 +42,7 @@ feature -- Test routines
 		do
 			create c.make
 			c.down
-			assert("asdasd", c.last_random_cell_coordinates = c.coord_last_random_cell)
+			assert("Correct", c.last_random_cell_coordinates = c.coord_last_random_cell)
 		end
 
 end

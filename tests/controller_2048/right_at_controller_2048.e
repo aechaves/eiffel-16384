@@ -17,16 +17,24 @@ feature --Test routines
 			--	        Scenario: Moving RIGHT changes board state colapsing crashing cells with
 			--                        similar values
 			--                Given the game board is in state
-			--                        |2 |2 |2 |4 |
-			--                        |4 |  |4 |2 |
-			--                        |2 |  |  |  |
-			--                        |  |  |  |  |
+			--                        |2 |2 |2 |4 |0 |0 |0 |0 |
+			--                        |4 |0 |4 |2 |0 |0 |0 |0 |
+			--                        |2 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
 			--                When I move RIGHT
 			--                Then I should obtain
-			--                        |  |2 |4 |4 |
-			--                        |  |  |8 |2 |
-			--                        |  |  |  |2 |
-			--                        |  |  |  |  |
+			--                        |0 |0 |0 |0 |0 |2 |4 |4 |
+			--                        |0 |0 |0 |0 |0 |0 |8 |2 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |2 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0 |
 			--                And one of the empty cells remaining filled with 2 or 4.
 
 		local
@@ -44,9 +52,9 @@ feature --Test routines
 			controller.board.set_cell (2, 4, 2)
 			controller.board.set_cell (3, 1, 2)
 			controller.right
-			assert ("First row moved right correctly", controller.board.elements.item (1, 2).value = 2 and controller.board.elements.item (1, 3).value = 4 and controller.board.elements.item (1, 4).value = 4)
-			assert ("Second row moved right correctly", controller.board.elements.item (2, 3).value = 8 and controller.board.elements.item (2, 4).value = 2)
-			assert ("Third row moved right correctly", controller.board.elements.item (3, 4).value = 2)
+			assert ("First row moved right correctly", controller.board.elements.item (1, 6).value = 2 and controller.board.elements.item (1, 7).value = 4 and controller.board.elements.item (1, 8).value = 4)
+			assert ("Second row moved right correctly", controller.board.elements.item (2, 7).value = 8 and controller.board.elements.item (2, 8).value = 2)
+			assert ("Third row moved right correctly", controller.board.elements.item (3, 8).value = 2)
 		end --end do
 
 	test_moves_right_cell_value_is_valid
@@ -119,10 +127,14 @@ feature --Test routines
 			--	        Scenario: can't move RIGHT, pre condition is violated.
 			--                    Given the game board is in state
 			--              When I move RIGHT the funtion throw an error.
-			--                        |32 |16 |32 |16 |
-			--                        |128|64 |128|64 |
-			--                        |16 |32 |16 |32 |
-			--                        |64 |128|64 |128|
+			--                        |0 |0 |0 |0 |0 |0 |0 |16 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |64 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |32 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |128|
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
 
 		local
 			controller: CONTROLLER_2048
@@ -131,24 +143,12 @@ feature --Test routines
 		do
 			if not second_time then
 				ok := True
-				create board.make
+				create board.make_empty
 				create controller.make_with_board (board)
-				controller.board.set_cell (1, 1, 32)
-				controller.board.set_cell (2, 1, 128)
-				controller.board.set_cell (3, 1, 16)
-				controller.board.set_cell (4, 1, 64)
-				controller.board.set_cell (1, 2, 16)
-				controller.board.set_cell (2, 2, 64)
-				controller.board.set_cell (3, 2, 32)
-				controller.board.set_cell (4, 2, 128)
-				controller.board.set_cell (1, 3, 32)
-				controller.board.set_cell (2, 3, 128)
-				controller.board.set_cell (3, 3, 16)
-				controller.board.set_cell (4, 3, 64)
-				controller.board.set_cell (1, 4, 16)
-				controller.board.set_cell (2, 4, 64)
-				controller.board.set_cell (3, 4, 32)
-				controller.board.set_cell (4, 4, 128)
+				controller.board.set_cell (1, 8, 16)
+				controller.board.set_cell (2, 8, 64)
+				controller.board.set_cell (3, 8, 32)
+				controller.board.set_cell (4, 8, 128)
 				controller.right -- Must throw an exception
 				ok := False
 			end
@@ -165,15 +165,23 @@ feature --Test routines
 			--	        Scenario: Moving RIGHT changes board state moving all cells to the rightmost empty cell.
 			--                    Given the game board is in state
 			--                    When i move RIGHT,
-			--                        |   |   |   |2  |
-			--                        |   |   |4  |   |
-			--                        |   |8  |   |   |
-			--                        |16 |   |   |   |
+			--                        |0 |0 |0 |0 |0 |0 |0 |2  |
+			--                        |0 |0 |0 |0 |0 |0 |4 |0  |
+			--                        |0 |0 |0 |0 |0 |8 |0 |0  |
+			--                        |0 |0 |0 |0 |16|0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
 			--                    Then I should obtain
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 4 |
-			--                        |   |   |   | 8 |
-			--                        |   |   |   |16 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |2  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |4  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |8  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |16 |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
+			--                        |0 |0 |0 |0 |0 |0 |0 |0  |
 			--                    And one of the empty cells remaining filled with 2 or 4.
 
 		local
@@ -182,54 +190,15 @@ feature --Test routines
 		do
 			create board.make_empty
 			create controller.make_with_board (board)
-			controller.board.set_cell (1, 4, 2)
-			controller.board.set_cell (2, 3, 4)
-			controller.board.set_cell (3, 2, 8)
-			controller.board.set_cell (4, 1, 16)
+			controller.board.set_cell (1, 8, 2)
+			controller.board.set_cell (2, 7, 4)
+			controller.board.set_cell (3, 6, 8)
+			controller.board.set_cell (4, 5, 16)
 			controller.right
-			assert ("First row moved right correctly", controller.board.elements.item (1, 4).value = 2)
-			assert ("Second row moved right correctly", controller.board.elements.item (2, 4).value = 4)
-			assert ("Third row moved right correctly", controller.board.elements.item (3, 4).value = 8)
-			assert ("Fourth row moved right correctly", controller.board.elements.item (4, 4).value = 16)
-		end --end do
-
-	test_move_right_not_movement_of_cells
-
-			--	        Scenario: Moving RIGHT don't changes board state.
-			--                    Given the game board is in state
-			--                    When i move RIGHT,
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                    Then I should obtain the same board
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                        |   |   |   | 2 |
-			--                    And one of the empty cells remaining filled with 2 or 4.
-		local
-			board: BOARD_2048
-			controller: CONTROLLER_2048
-			ok, second_time: BOOLEAN
-		do
-			if not second_time then
-				ok := True
-				create board.make_empty
-				create controller.make_with_board (board)
-				controller.board.set_cell (1, 4, 2)
-				controller.board.set_cell (2, 4, 2)
-				controller.board.set_cell (3, 4, 2)
-				controller.board.set_cell (4, 4, 2)
-				controller.right -- Must throw an exception
-				ok := False
-			end
-			assert ("The routine RIGHT has to fail", ok)
-		rescue
-			second_time := True
-			if ok then -- ok = true means that the rutine failed
-				retry
-			end
+			assert ("First row moved right correctly", controller.board.elements.item (1, 8).value = 2)
+			assert ("Second row moved right correctly", controller.board.elements.item (2, 8).value = 4)
+			assert ("Third row moved right correctly", controller.board.elements.item (3, 8).value = 8)
+			assert ("Fourth row moved right correctly", controller.board.elements.item (4, 8).value = 16)
 		end --end do
 
 end

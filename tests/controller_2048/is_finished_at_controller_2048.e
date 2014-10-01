@@ -31,29 +31,34 @@ feature
 		local
 			board: BOARD_2048
 			controller: CONTROLLER_2048
+			i,j,value : INTEGER
 		do
 			create board.make_empty
-			board.set_cell (1, 1, 2)
-			board.set_cell (1, 2, 4)
-			board.set_cell (1, 3, 2)
-			board.set_cell (1, 4, 4)
-			board.set_cell (2, 1, 4)
-			board.set_cell (2, 2, 2)
-			board.set_cell (2, 3, 4)
-			board.set_cell (2, 4, 2)
-			board.set_cell (3, 1, 2)
-			board.set_cell (3, 2, 4)
-			board.set_cell (3, 3, 2)
-			board.set_cell (3, 4, 4)
-			board.set_cell (4, 1, 4)
-			board.set_cell (4, 2, 2)
-			board.set_cell (4, 3, 4)
-			board.set_cell (4, 4, 2)
+			value:=2
+			from
+				i := 1
+			until
+				i > board.rows
+			loop
+				from
+					j := 1
+				until
+					j > board.columns
+				loop
+					board.set_cell (i, j, value)
+					value:=value*2
+					if (value=16384) then
+						value:=2
+					end
+					j:=j+1
+				end
+				i:=i+1
+			end
 			create controller.make_with_board (board)
 			assert ("is_finished should be True", controller.is_finished)
 		end
 
-		is_finished_on_board_with_2048
+		is_finished_on_board_with_16384
 		-- Checks the finish condition on a board with a 2048 on it
 
 			local
@@ -61,7 +66,7 @@ feature
 				controller: CONTROLLER_2048
 			do
 				create board.make_empty
-				board.set_cell (3, 2, 2048)
+				board.set_cell (3, 2, 16384)
 				create controller.make_with_board (board)
 				assert ("is_finished should be True", controller.is_finished)
 			end

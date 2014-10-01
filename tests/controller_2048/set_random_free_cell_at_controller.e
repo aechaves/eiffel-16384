@@ -35,12 +35,12 @@ feature -- Test routines
 		from
 			i:=1
 		until
-			i>4
+			i>board.rows
 		loop
 			from
 				j:=1
 			until
-				j>4
+				j>board.columns
 			loop
 				board.set_cell (i, j,2)
 				j:=j+1
@@ -65,12 +65,12 @@ feature -- Test routines
 		from
 			i:=1
 		until
-			i>4
+			i>board.rows
 		loop
 			from
 				j:=1
 			until
-				j>4
+				j>board.columns
 			loop
 				board.set_cell (i, j,2)
 				j:=j+1
@@ -85,10 +85,10 @@ feature -- Test routines
     	end
     	assert ("The rutine has to fail", ok)
 	rescue
-     		second_time := True
-     		if ok then   -- ok = true means that the rutine failed
-           		retry
-    		end
+     	second_time := True
+     	if ok then   -- ok = true means that the rutine failed
+        	retry
+    	end
 	end
 
 
