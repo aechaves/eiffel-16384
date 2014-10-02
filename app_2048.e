@@ -37,23 +37,18 @@ feature {NONE} -- Execution
 
 				if (l_user.is_equal ("a") and controller.board.can_move_left) then
 					controller.left
-					Result.set_body( show_board_and_form )
 				end
 				if (l_user.is_equal ("d") and controller.board.can_move_right) then
 					controller.right
-					Result.set_body( show_board_and_form )
 				end
 				if (l_user.is_equal ("w") and controller.board.can_move_up) then
 					controller.up
-					Result.set_body( show_board_and_form )
 				end
 				if (l_user.is_equal ("s") and controller.board.can_move_down) then
 					controller.down
-					Result.set_body( show_board_and_form )
 				end
-
+				Result.set_body( html_body+style )
 			else
-				--Result.set_body(  show_board_and_form )
 				Result.set_body (html_body+style)
 			end
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
@@ -160,7 +155,7 @@ feature {NONE} --Show board with html table
 		s:="</body><body ng-app="+"main"+" ng-controller="+"BoardController"+">"
 		s.append ("<h1>16384</h1>")
 		s.append ("<div class='wrapper'>")
-		s.append ("<table>")
+		s.append ("<table width="+"600"+" height="+"600"+">")
 		s.append ("<tr ng-repeat='row in board'>")
 		s.append ("<td>{{row.cell1}}</td>")
 		s.append ("<td>{{row.cell2}}</td>")
@@ -172,6 +167,11 @@ feature {NONE} --Show board with html table
 		s.append ("<td>{{row.cell8}}</td>")
 		s.append ("</tr>")
 		s.append ("</table>")
+		s.append ("<br>")
+		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<input type="+"text"+" name="+"user"+">")
+		s.append ("<input type="+"submit"+" value="+"Mover"+">")
+		s.append ("</form>")
 		s.append ("</div>")
 		Result := s
 	end
