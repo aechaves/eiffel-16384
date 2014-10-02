@@ -20,6 +20,8 @@ feature -- Implementation
 
 	controller: CONTROLLER_2048
 			-- It takes care of the control of the 2048 game.
+	user: USER_16384
+			-- Used for loading and saving games.
 
 
 feature {NONE} -- Execution
@@ -49,6 +51,17 @@ feature {NONE} -- Execution
 				end
 				Result.set_body( html_body+style )
 			else
+				if (attached req.string_item ("load_user") as load_user) and (attached req.string_item ("load_pass") as load_pass) then
+					user.load_game
+					create controller.make_with_board (user.game)
+				end
+
+				if (attached req.string_item ("save_user") as save_user) and (attached req.string_item ("save_pass") as save_pass) then
+					user.set_nickname (save_user)
+					user.set_pass (save_pass)
+					user.save_game(controller.board)
+				end
+
 				Result.set_body (html_body+style)
 			end
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
@@ -63,6 +76,7 @@ feature {NONE} -- Initialization
 				--| Uncomment the following line, to be able to load options from the file ewf.ini
 			create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI} service_options.make_from_file ("ewf.ini")
 			create controller.make
+			create user.make_new_user("guest","guest","guest","guest") -- Empty user
 				--| You can also uncomment the following line if you use the Nino connector
 				--| so that the server listens on port 9999
 				--| quite often the port 80 is already busy
@@ -171,6 +185,20 @@ feature {NONE} --Show board with html table
 		s.append ("<form action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"user"+">")
 		s.append ("<input type="+"submit"+" value="+"Mover"+">")
+		s.append ("</form>")
+		-- User load
+		s.append ("<br>")
+		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<input type="+"text"+" name="+"load_user"+">")
+		s.append ("<input type="+"password"+" name="+"load_pass"+">")
+		s.append ("<input type="+"submit"+" value="+"Load game"+">")
+		s.append ("</form>")
+		-- User save
+		s.append ("<br>")
+		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<input type="+"text"+" name="+"save_user"+">")
+		s.append ("<input type="+"password"+" name="+"save_pass"+">")
+		s.append ("<input type="+"submit"+" value="+"Save game"+">")
 		s.append ("</form>")
 		s.append ("</div>")
 		Result := s

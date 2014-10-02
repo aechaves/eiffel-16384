@@ -64,7 +64,7 @@ feature -- Initialisation
 
 feature {IS_VALID_NAME_AT_USER_2048, APP_2048}
 
-	make_for_test()
+	make_for_test
 			-- This method allows to create a User withtout any restriction on the imputs
 			-- For testing purpouse
 		do
@@ -166,12 +166,18 @@ feature -- Control methods
 			end
 		end
 
-feature {HAS_UNFINISHED_GAME_AT_USER_2048}
+feature {HAS_UNFINISHED_GAME_AT_USER_2048, APP_2048}
 
 	set_nickname (nick: STRING)
 			--
 		do
 			nickname := nick
+		end
+
+	set_pass (pass: STRING)
+			--
+		do
+			password := pass
 		end
 
 end
