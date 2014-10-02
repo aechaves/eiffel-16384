@@ -30,7 +30,8 @@ feature {NONE} -- Execution
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
 			create Result.make
-			Result.set_title ("2048")
+			Result.add_javascript_url ("js/angular.min.js")
+			Result.set_title ("16384")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
 			if attached req.string_item ("user") as l_user then
