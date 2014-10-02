@@ -1,6 +1,6 @@
 note
 	description: "[
-		Test class for routine make at BOARD_2048 
+		Test class for routine make at BOARD_2048
 	]"
 	author: "Facundo Munoz"
 	date: "30/08/2013"
@@ -25,8 +25,8 @@ feature -- Test routines
 			assert ("is not full",not board.is_full)
 			assert ("is not winning",not board.is_winning_board)
 			assert ("just two cells", board.nr_of_filled_cells = 2)
-			assert ("4 columns", board.columns = 4)
-			assert ("4 rows", board.rows = 4)
+			assert ("8 columns", board.columns = 8)
+			assert ("8 rows", board.rows = 8)
 		end
 
 end
