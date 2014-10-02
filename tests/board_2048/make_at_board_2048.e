@@ -24,7 +24,7 @@ feature -- Test routines
 
 			assert ("is not full",not board.is_full)
 			assert ("is not winning",not board.is_winning_board)
-			assert ("just two cells", board.nr_of_filled_cells = 2)
+			assert ("just four cells", board.nr_of_filled_cells = 4)
 			assert ("8 columns", board.columns = 8)
 			assert ("8 rows", board.rows = 8)
 		end

@@ -67,10 +67,14 @@ feature -- Initialisation
 		-- cells are chosen randomly.
 		local
 		    random_sequence : RANDOM
-			first_random_cell_row : INTEGER
-			first_random_cell_col : INTEGER
-			second_random_cell_row : INTEGER
-			second_random_cell_col : INTEGER
+			fst_cell_row : INTEGER
+			fst_cell_col : INTEGER
+			snd_cell_row : INTEGER
+			snd_cell_col : INTEGER
+			trd_cell_row : INTEGER
+			trd_cell_col : INTEGER
+			fth_cell_row : INTEGER
+			fth_cell_col : INTEGER
 		do
 			make_empty
 
@@ -79,20 +83,35 @@ feature -- Initialisation
 
 			--generate two different random positions
 			from
-				first_random_cell_row  := get_random (random_sequence, rows) + 1;
-				first_random_cell_col  := get_random (random_sequence, columns) + 1;
-				second_random_cell_row := get_random (random_sequence, rows) + 1;
-				second_random_cell_col := get_random (random_sequence, columns) + 1;
+				fst_cell_row  := get_random (random_sequence, rows) + 1;
+				fst_cell_col  := get_random (random_sequence, columns) + 1;
+				snd_cell_row := get_random (random_sequence, rows) + 1;
+				snd_cell_col := get_random (random_sequence, columns) + 1;
+				trd_cell_row := get_random (random_sequence, rows) + 1;
+				trd_cell_col := get_random (random_sequence, columns) + 1;
+				fth_cell_row := get_random (random_sequence, rows) + 1;
+				fth_cell_col := get_random (random_sequence, columns) + 1;
 			until
-				first_random_cell_row /= second_random_cell_row or first_random_cell_col /= second_random_cell_col
+				diff_pos(fst_cell_row,fst_cell_col,snd_cell_row,snd_cell_col) and
+				diff_pos(fst_cell_row,fst_cell_col,trd_cell_row,trd_cell_col) and
+				diff_pos(fst_cell_row,fst_cell_col,fth_cell_row,fth_cell_col) and
+				diff_pos(snd_cell_row,snd_cell_col,trd_cell_row,trd_cell_col) and
+				diff_pos(snd_cell_row,snd_cell_col,trd_cell_row,trd_cell_col) and
+				diff_pos(trd_cell_row,trd_cell_col,fth_cell_row,fth_cell_col)
 			loop
-				second_random_cell_row := get_random (random_sequence, rows) + 1;
-				second_random_cell_col := get_random (random_sequence, columns) + 1;
+				snd_cell_row := get_random (random_sequence, rows) + 1;
+				snd_cell_col := get_random (random_sequence, columns) + 1;
+				trd_cell_row := get_random (random_sequence, rows) + 1;
+				trd_cell_col := get_random (random_sequence, columns) + 1;
+				fth_cell_row := get_random (random_sequence, rows) + 1;
+				fth_cell_col := get_random (random_sequence, columns) + 1;
 			end
 
 			-- set cells
-			set_cell (first_random_cell_row, first_random_cell_col, get_random_cell_two_or_four (random_sequence))
-			set_cell (second_random_cell_row, second_random_cell_col, get_random_cell_two_or_four (random_sequence))
+			set_cell (fst_cell_row, fst_cell_col, get_random_cell_two_or_four (random_sequence))
+			set_cell (snd_cell_row, snd_cell_col, get_random_cell_two_or_four (random_sequence))
+			set_cell (trd_cell_row, trd_cell_col, get_random_cell_two_or_four (random_sequence))
+			set_cell (fth_cell_row, fth_cell_col, get_random_cell_two_or_four (random_sequence))
 		end
 
 feature -- Status report
@@ -328,7 +347,7 @@ feature -- Status report
 				until
 					j > columns or is_winning
 				loop
-					if (elements.item (i,j).value = 2048) then
+					if (elements.item (i,j).value = 16384) then
 						is_winning := True
 					end
 					j := j + 1
@@ -388,6 +407,12 @@ feature {NONE} -- Auxiliary routines
 			Result := random_sequence.item \\ ceil;
 		ensure
 			Result < ceil
+		end
+
+	diff_pos (x_row: INTEGER; x_col: INTEGER; y_row: INTEGER; y_col: INTEGER) : BOOLEAN
+		-- Return true if positions are different
+		do
+			Result := (x_row /= y_row or  x_col /= Y_col)
 		end
 
 end

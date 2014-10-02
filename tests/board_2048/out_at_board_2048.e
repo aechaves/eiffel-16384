@@ -43,7 +43,7 @@ feature -- Rutine is_power_of_two at CELL_2048 class tests
 		do
 			create board.make
 			res := board.out.occurrences ('2')+board.out.occurrences ('4')
-			assert ("Board.out contains either two 2, two 4 or a 2 and a 4", res = 2)
+			assert ("Board.out contains either two 2, two 4 or a 2 and a 4", res = 4)
 		end
 
 end

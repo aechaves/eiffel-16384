@@ -46,23 +46,26 @@ feature -- Test routines
 
 	is_winning_board_on_winning_board
 			-- Test for board that is a winning board
-			--						  |  |   |    |    |  |  |  |  |
-			--						  |  |   |    |    |  |  |  |  |
-			--						  |  |   |    |4   |  |  |  |  |
-			--						  |32|256|1024|2048|  |  |  |  |
-			--						  |  |   |    |    |  |  |  |  |
-			--						  |  |   |    |    |  |  |  |  |
-			--						  |  |   |    |    |  |  |  |  |
-			--						  |  |   |    |    |  |  |  |  |
+			--						  |   |   |    |    |    |    |     |  |
+			--						  |   |   |    |    |    |    |     |  |
+			--						  |   |   |    |4   |    |    |     |  |
+			--						  |256|512|1024|2048|4096|8192|16384|  |
+			--						  |   |   |    |    |    |    |     |  |
+			--						  |   |   |    |    |    |    |     |  |
+			--						  |   |   |    |    |    |    |     |  |
+			--						  |   |   |    |    |    |    |     |  |
 		local
 			board : BOARD_2048
 		do
 			create board.make_empty
 			board.set_cell (3,4,4)
-			board.set_cell (4,1,32)
-			board.set_cell (4,2,256)
+			board.set_cell (4,1,256)
+			board.set_cell (4,2,512)
 			board.set_cell (4,3,1024)
 			board.set_cell (4,4,2048)
+			board.set_cell (4,5,4096)
+			board.set_cell (4,6,8192)
+			board.set_cell (4,7,16384)
 			assert ("The board is a winning board", board.is_winning_board)
 		end
 

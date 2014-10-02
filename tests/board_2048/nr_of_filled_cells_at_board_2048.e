@@ -21,7 +21,7 @@ feature -- Test routines
 			board: BOARD_2048
 		do
 			create board.make
-			assert ("Initialised board has two cells ", board.nr_of_filled_cells = 2)
+			assert ("Initialised board has two cells ", board.nr_of_filled_cells = 4)
 		end
 
 	nr_of_filled_cells_with_empty_board_test
