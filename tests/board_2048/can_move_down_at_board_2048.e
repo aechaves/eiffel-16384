@@ -38,8 +38,8 @@ feature -- Test routines
 			board:BOARD_2048
 		do
 			create board.make_empty
-			board.set_cell(3,4,2)
-			board.set_cell(4,4,4)
+			board.set_cell(7,4,2)
+			board.set_cell(8,4,4)
 			assert ("Can not move down", not board.can_move_down)
 		end
 

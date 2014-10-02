@@ -124,10 +124,10 @@ feature -- Test routines
 			if not second_time then
 				ok := True
 				create board.make_empty
-				board.set_cell((6),1,2)
+				board.set_cell((9),1,2)
 				ok := False
 			end
-			assert ("6 is not a valid value of index, this test should return false", ok)
+			assert ("9 is not a valid value of index, this test should return false", ok)
 			rescue
 			second_time := True
 			if ok then
@@ -138,7 +138,7 @@ feature -- Test routines
 
 	set_cell_with_column_index_out_of_range
 			--set_cell testing with index out of range. It should break precondition
-			
+
 		local
 			ok, second_time: BOOLEAN
 			board : BOARD_2048
@@ -146,7 +146,7 @@ feature -- Test routines
 			if not second_time then
 				ok := True
 				create board.make_empty
-				board.set_cell(1,6,2)
+				board.set_cell(1,9,2)
 				ok := False
 			end
 			assert ("6 is not a valid value of index, this test should return false", ok)

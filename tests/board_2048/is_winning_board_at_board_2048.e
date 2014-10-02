@@ -26,10 +26,14 @@ feature -- Test routines
 
 	is_winning_board_on_simple_board
 			-- Test for simple board that not is a winning board
-			--                        | 4| 8|  |  |
-			--                        | 2|  |  |  |
-			--                        |  |  |  |  |
-			--                        |  |  |  |  |
+			--                        | 4| 8|  |  |  |  |  |  |
+			--                        | 2|  |  |  |  |  |  |  |
+			--                        |  |  |  |  |  |  |  |  |
+			--                        |  |  |  |  |  |  |  |  |
+			--						  |  |  |  |  |  |  |  |  |
+			--						  |  |  |  |  |  |  |  |  |
+			--						  |  |  |  |  |  |  |  |  |
+			--						  |  |  |  |  |  |  |  |  |
 		local
 			board : BOARD_2048
 		do
@@ -42,10 +46,14 @@ feature -- Test routines
 
 	is_winning_board_on_winning_board
 			-- Test for board that is a winning board
-			--                        |    |    |    |    |
-			--                        |    |    |    |    |
-			--                        |    |    |    |   4|
-			--                        |  32| 256|1024|2048|
+			--						  |  |   |    |    |  |  |  |  |
+			--						  |  |   |    |    |  |  |  |  |
+			--						  |  |   |    |4   |  |  |  |  |
+			--						  |32|256|1024|2048|  |  |  |  |
+			--						  |  |   |    |    |  |  |  |  |
+			--						  |  |   |    |    |  |  |  |  |
+			--						  |  |   |    |    |  |  |  |  |
+			--						  |  |   |    |    |  |  |  |  |
 		local
 			board : BOARD_2048
 		do
