@@ -53,7 +53,6 @@ feature {NONE} -- Execution
 				end
 
 			else
-				create controller.make
 				Result.set_body(  show_board_and_form )
 
 			end
@@ -66,7 +65,7 @@ feature {NONE} -- Initialization
 		do
 				--| Uncomment the following line, to be able to load options from the file ewf.ini
 			create {WSF_SERVICE_LAUNCHER_OPTIONS_FROM_INI} service_options.make_from_file ("ewf.ini")
-
+			create controller.make
 				--| You can also uncomment the following line if you use the Nino connector
 				--| so that the server listens on port 9999
 				--| quite often the port 80 is already busy
