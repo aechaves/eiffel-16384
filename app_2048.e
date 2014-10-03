@@ -49,7 +49,7 @@ feature {NONE} -- Execution
 				if (l_user.is_equal ("s") and controller.board.can_move_down) then
 					controller.down
 				end
-				Result.set_body( html_body+style )
+				Result.set_body( html_body+style+cell_color_style )
 			else
 				if (attached req.string_item ("load_user") as load_user) and (attached req.string_item ("load_pass") as load_pass) then
 					user.load_game
@@ -62,7 +62,7 @@ feature {NONE} -- Execution
 					user.save_game(controller.board)
 				end
 
-				Result.set_body (html_body+style)
+				Result.set_body (html_body+style+cell_color_style)
 			end
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
 			Result.add_javascript_content (main_script)
@@ -145,7 +145,11 @@ feature {NONE} --Show board with html table
 			until
 				j>controller.board.columns
 			loop
-				s.append ("cell"+j.out+":'"+controller.board.elements.item (i, j).value.out+"'")
+				--if (controller.board.elements.item (i, j).value=0) then
+				--	s.append ("cell"+j.out+":''")
+				--else
+					s.append ("cell"+j.out+":'"+controller.board.elements.item (i, j).value.out+"'")
+				--end
 				if (j<controller.board.columns) then
 					s.append (",")
 				end
@@ -158,6 +162,24 @@ feature {NONE} --Show board with html table
 			i:=i+1
 		end
 		s.append(" ]; ")
+		-- Cell color function
+		s.append ("$scope.CellColor=function(cellNumber) { ")
+		s.append ("if (cellNumber==0) { return {number0:true};} ")
+		s.append ("if (cellNumber==2) { return {number2:true};} ")
+		s.append ("if (cellNumber==4) { return {number4:true};} ")
+		s.append ("if (cellNumber==8) { return {number8:true};} ")
+		s.append ("if (cellNumber==16) { return {number16:true};} ")
+		s.append ("if (cellNumber==32) { return {number32:true};} ")
+		s.append ("if (cellNumber==64) { return {number64:true};} ")
+		s.append ("if (cellNumber==128) { return {number128:true};} ")
+		s.append ("if (cellNumber==256) { return {number256:true};} ")
+		s.append ("if (cellNumber==512) { return {number512:true};} ")
+		s.append ("if (cellNumber==1024) { return {number1024:true};} ")
+		s.append ("if (cellNumber==2048) { return {number2048:true};} ")
+		s.append ("if (cellNumber==4096) { return {number4096:true};} ")
+		s.append ("if (cellNumber==8192) { return {number8192:true};} ")
+		s.append ("if (cellNumber==16384) { return {number16384:true};} ")
+		s.append ("}; ")
 		s.append("})")
 		Result := s
 	end
@@ -171,14 +193,14 @@ feature {NONE} --Show board with html table
 		s.append ("<div class='wrapper'>")
 		s.append ("<table width="+"600"+" height="+"600"+">")
 		s.append ("<tr ng-repeat='row in board'>")
-		s.append ("<td>{{row.cell1}}</td>")
-		s.append ("<td>{{row.cell2}}</td>")
-		s.append ("<td>{{row.cell3}}</td>")
-		s.append ("<td>{{row.cell4}}</td>")
-		s.append ("<td>{{row.cell5}}</td>")
-		s.append ("<td>{{row.cell6}}</td>")
-		s.append ("<td>{{row.cell7}}</td>")
-		s.append ("<td>{{row.cell8}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell1}})'>{{row.cell1}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell2}})'>{{row.cell2}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell3}})'>{{row.cell3}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell4}})'>{{row.cell4}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell5}})'>{{row.cell5}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell6}})'>{{row.cell6}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell7}})'>{{row.cell7}}</td>")
+		s.append ("<td ng-class='CellColor({{row.cell8}})'>{{row.cell8}}</td>")
 		s.append ("</tr>")
 		s.append ("</table>")
 		s.append ("<br>")
@@ -212,11 +234,35 @@ feature {NONE} --Show board with html table
 		s.append ("h1 {text-align: center;color:#666;text-shadow:0px 2px 0px #fff;}")
 		s.append (".wrapper{width: 650px;margin: 0 auto;box-shadow: 5px 5px 5px #555;border-radius: 15px;padding: 10px;}")
 		s.append ("body {background: #ccc;font-family: "+"Open Sans"+", arial;}")
-		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 1px solid #38678f;margin: 50px auto;background: white;}")
-		s.append ("td {border-right: 1px solid #cccccc;padding: 10px;text-align: center;transition: all 0.2s;}")
-		s.append ("tr {border-bottom: 1px solid #cccccc;}")
+		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 3px solid #cccccc;margin: 50px auto;}")
+		s.append ("td {border-right: 3px solid #cccccc;padding: 10px;text-align: center;transition: all 0.2s;}")
+		s.append ("tr {border-bottom: 3px solid #cccccc;}")
 		s.append ("tr:last-child {border-bottom: 0px;}")
 		s.append ("td:last-child {border-right: 0px;}")
+		s.append ("</style>")
+		Result := s
+	end
+
+	cell_color_style : STRING
+	local
+		s : STRING
+	do
+		s := "<style>"
+		s.append (".number0 { background-color:#C1BABA}")
+		s.append (".number2 { background-color:#eee4da}")
+		s.append (".number4 { background-color:#ede0c8}")
+		s.append (".number8{ background-color:#f2b179}")
+		s.append (".number16 { background-color:#f59563}")
+		s.append (".number32 { background-color:#f67c5f}")
+		s.append (".number64 { background-color:#f65e3b}")
+		s.append (".number128 { background-color:#edcf72}")
+		s.append (".number256{ background-color:#edcc61}")
+		s.append (".number512 { background-color:#edc850}")
+		s.append (".number1024{ background-color:#edc53f}")
+		s.append (".number2048 { background-color:#edc22e}")
+		s.append(".number4096 { background-color:#77a136}")
+		s.append(".number8192 { background-color:#2db388}")
+		s.append(".number16384 { background-color:#2d83b3}")
 		s.append ("</style>")
 		Result := s
 	end
