@@ -1,0 +1,68 @@
+
+h1 {
+    text-align: center;
+    color:#666;
+    text-shadow: 0px 2px 0px #fff;
+}
+
+.wrapper {
+    width: 650px;
+    margin: 0 auto;
+    box-shadow: 5px 5px 5px #555;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+body {
+    background: #ccc;
+    font-family: Open Sans, arial;
+}
+
+table { 
+    max-width: 600px;
+    height: 320px;
+    border-collapse: collapse;
+    border: 3px solid white;
+    margin: 50px auto; 
+    background-color:white;
+    table-layout: fixed;
+}
+
+td {
+    border-right: 3px solid white;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+td:last-child {
+    border-right: 0px; 
+}
+
+tr {
+    border-bottom: 3px solid white;
+}
+
+tr:last-child {
+    border-bottom: 0px;
+}
+
+/*Cell colors*/
+
+.number0 { background-color:#C1BABA}
+.number2 { background-color:#eee4da}
+.number4 { background-color:#ede0c8}
+.number8{ background-color:#f2b179}
+.number16 { background-color:#f59563}
+.number32 { background-color:#f67c5f}
+.number64 { background-color:#f65e3b}
+.number128 { background-color:#edcf72}
+.number256{ background-color:#edcc61}
+.number512 { background-color:#edc850}
+.number1024{ background-color:#edc53f}
+.number2048 { background-color:#edc22e}
+.number4096 { background-color:#77a136}
+.number8192 { background-color:#2db388}
+.number16384 { background-color:#2d83b3}
+
+        
