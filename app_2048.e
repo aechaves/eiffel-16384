@@ -156,7 +156,13 @@ feature {NONE} --Show board with html table
 		s.append ("if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; }  ")
 		s.append ("if ($scope.keyOk) { $.ajax({type : 'POST',url:'http://localhost:9999/',data:$scope.key,contentType:'json',headers: {Accept : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Content-Type': 'application/x-www-form-urlencoded'}}).done(function(data){document.open();document.write(data);document.close();})}")
 		s.append ("}; ")
-
+		-- Load form visibility
+		s.append ("$scope.formLoadVisibility=false; ")
+		s.append ("$scope.formSaveVisibility=false; ")
+		s.append ("$scope.ShowFormLoad=function(){ $scope.formLoadVisibility=!$scope.formLoadVisibility; $scope.formSaveVisibility=false; }; ")
+		s.append ("$scope.ShowFormSave=function(){ $scope.formSaveVisibility=!$scope.formSaveVisibility; $scope.formLoadVisibility=false; }; ")
+		s.append ("$scope.Load=function(){ $scope.formLoadVisibility=false;} ; ")
+		s.append ("$scope.Save=function(){ $scope.formSaveVisibility=false;} ; ")
 		s.append("})")
 		Result := s
 	end
@@ -184,24 +190,23 @@ feature {NONE} --Show board with html table
 		s.append ("</div>")
 		s.append ("<br>")
 		-- User load
-		s.append ("<br>")
+		s.append ("<div class='wrapper'>")
 		s.append ("<center>")
-		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<button ng-click='ShowFormLoad()' >Load game</button>")
+		s.append ("<button ng-click='ShowFormSave()' >Save game</button>")
+		s.append ("<form ng-show='formLoadVisibility' action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"load_user"+">")
 		s.append ("<input type="+"password"+" name="+"load_pass"+">")
-		s.append ("<input type="+"submit"+" value="+"Load game"+">")
+		s.append ("<input ng-click='Load()' type="+"submit"+" value="+"Load game"+">")
 		s.append ("</form>")
-		s.append ("</center>")
 		-- User save
-		s.append ("<br>")
-		s.append ("<center>")
-		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<form ng-show='formSaveVisibility' action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"save_user"+">")
 		s.append ("<input type="+"password"+" name="+"save_pass"+">")
-		s.append ("<input type="+"submit"+" value="+"Save game"+">")
+		s.append ("<input ng-click='Save()' type="+"submit"+" value="+"Save game"+">")
 		s.append ("</form>")
-		s.append ("</div>")
 		s.append ("</center>")
+		s.append ("</div>")
 		Result := s
 	end
 
