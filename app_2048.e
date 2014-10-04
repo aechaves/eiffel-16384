@@ -153,40 +153,6 @@ feature {NONE} --Board serialization for database storing
 
 feature {NONE} --Show board with html table
 
-
-	show_board_and_form : STRING
-	local
-		i,j : INTEGER
-		table, form : STRING
-	do
-		table:=""
-		table.append ("<table id="+"board"+" width="+"300"+" height="+"300"+">")
-		from
-			i := 1
-		until
-			i>controller.board.rows
-		loop
-			table.append ("<tr>")
-			from
-				j:=1
-			until
-				j>controller.board.columns
-			loop
-				table.append ("<td>"+controller.board.elements.item (i, j).value.out+"</td>")
-				j:=j+1
-			end
-			i:=i+1
-			table.append ("</tr>")
-		end
-		table.append ("</table>")
-		table.append ("<br>")
-		table.append ("<form action="+"/"+" method="+"POST"+">")
-		table.append ("<input type="+"text"+" name="+"user"+">")
-		table.append ("<input type="+"submit"+" value="+"Mover"+">")
-		table.append ("</form>")
-		Result := table
-	end
-
 	main_script : STRING
 	local
 		s : STRING
@@ -194,7 +160,7 @@ feature {NONE} --Show board with html table
 	do
 		s := ""
 		s.append ("var app = angular.module('main',[]). ")
-		s.append("controller('BoardController',function($scope) {")
+		s.append("controller('BoardController',function($scope,$http) {")
 		s.append(" $scope.board = [")
 		from
 			i := 1
@@ -242,6 +208,13 @@ feature {NONE} --Show board with html table
 		s.append ("if (cellNumber==8192) { return {number8192:true};} ")
 		s.append ("if (cellNumber==16384) { return {number16384:true};} ")
 		s.append ("}; ")
+		-- Key control function
+		s.append ("$scope.KeyControl=function(ev){ ")
+		s.append ("if (ev.which==37) { $scope.pressed='a';   } ")
+		s.append ("if (ev.which==38) { $scope.pressed='w'; } ")
+		s.append ("if (ev.which==39) { $scope.pressed='d';} ")
+		s.append ("if (ev.which==40) { $scope.pressed='s';}  ")
+		s.append ("}; ")
 		s.append("})")
 		Result := s
 	end
@@ -250,7 +223,7 @@ feature {NONE} --Show board with html table
 	local
 		s : STRING
 	do
-		s:="</body><body ng-app="+"main"+" ng-controller="+"BoardController"+">"
+		s:="</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)'>"
 		s.append ("<h1>16384</h1>")
 		s.append ("<div class='wrapper'>")
 		s.append ("<table width="+"600"+" height="+"600"+">")
@@ -266,9 +239,9 @@ feature {NONE} --Show board with html table
 		s.append ("</tr>")
 		s.append ("</table>")
 		s.append ("<br>")
-		s.append ("<form action="+"/"+" method="+"POST"+">")
-		s.append ("<input type="+"text"+" name="+"user"+">")
-		s.append ("<input type="+"submit"+" value="+"Mover"+">")
+		s.append ("<form  action="+"/"+" method="+"POST"+">")
+		s.append ("<input type="+"text"+" name="+"user"+" value='{{pressed}}' >")
+		s.append ("<input type='submit' value='Mover'>")
 		s.append ("</form>")
 		-- User load
 		s.append ("<br>")
@@ -296,11 +269,11 @@ feature {NONE} --Show board with html table
 		s.append ("h1 {text-align: center;color:#666;text-shadow:0px 2px 0px #fff;}")
 		s.append (".wrapper{width: 650px;margin: 0 auto;box-shadow: 5px 5px 5px #555;border-radius: 15px;padding: 10px;}")
 		s.append ("body {background: #ccc;font-family: "+"Open Sans"+", arial;}")
-		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 3px solid #cccccc;margin: 50px auto;}")
-		s.append ("td {border-right: 3px solid #cccccc;padding: 10px;text-align: center;transition: all 0.2s;}")
-		s.append ("tr {border-bottom: 3px solid #cccccc;}")
+		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 3px solid white;margin: 50px auto; background-color:white;table-layout: fixed;}")
+		s.append ("td {border-right: 3px solid white;padding: 10px;text-align: center;transition: all 0.2s;}")
+		s.append ("tr {border-bottom: 3px solid white;}")
 		s.append ("tr:last-child {border-bottom: 0px;}")
-		s.append ("td:last-child {border-right: 0px;}")
+		s.append ("td:last-child {border-right: 0px; }")
 		s.append ("</style>")
 		Result := s
 	end
