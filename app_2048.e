@@ -181,22 +181,27 @@ feature {NONE} --Show board with html table
 		s.append ("<td ng-class='CellColor({{row.cell8}})'>{{row.cell8}}</td>")
 		s.append ("</tr>")
 		s.append ("</table>")
+		s.append ("</div>")
 		s.append ("<br>")
 		-- User load
 		s.append ("<br>")
+		s.append ("<center>")
 		s.append ("<form action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"load_user"+">")
 		s.append ("<input type="+"password"+" name="+"load_pass"+">")
 		s.append ("<input type="+"submit"+" value="+"Load game"+">")
 		s.append ("</form>")
+		s.append ("</center>")
 		-- User save
 		s.append ("<br>")
+		s.append ("<center>")
 		s.append ("<form action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"save_user"+">")
 		s.append ("<input type="+"password"+" name="+"save_pass"+">")
 		s.append ("<input type="+"submit"+" value="+"Save game"+">")
 		s.append ("</form>")
 		s.append ("</div>")
+		s.append ("</center>")
 		Result := s
 	end
 
@@ -205,12 +210,12 @@ feature {NONE} --Show board with html table
 		s : STRING
 	do
 		s:="<style>"
-		s.append ("h1 {text-align: center;color:#666;text-shadow:0px 2px 0px #fff;}")
+		s.append ("h1 {text-align: center;color:black;text-shadow:0px 2px 0px #fff;}")
 		s.append (".wrapper{width: 650px;margin: 0 auto;box-shadow: 5px 5px 5px #555;border-radius: 15px;padding: 10px;}")
 		s.append ("body {background: #ccc;font-family: "+"Open Sans"+", arial;}")
-		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 3px solid white;margin: 50px auto; background-color:white;table-layout: fixed;}")
-		s.append ("td {border-right: 3px solid white;padding: 10px;text-align: center;transition: all 0.2s;}")
-		s.append ("tr {border-bottom: 3px solid white;}")
+		s.append ("table {max-width: 600px;height: 400px;border-collapse: collapse;border: 3px solid #7E7575;margin: 25px auto;table-layout: fixed;}")
+		s.append ("td {border-right: 3px solid #7E7575;padding: 10px;text-align: center;transition: all 0.2s; color:#7E7575}")
+		s.append ("tr {border-bottom: 3px solid #7E7575;}")
 		s.append ("tr:last-child {border-bottom: 0px;}")
 		s.append ("td:last-child {border-right: 0px; }")
 		s.append ("</style>")
@@ -222,7 +227,7 @@ feature {NONE} --Show board with html table
 		s : STRING
 	do
 		s := "<style>"
-		s.append (".number0 { background-color:#C1BABA}")
+		s.append (".number0 { background-color:#7E7575}")
 		s.append (".number2 { background-color:#eee4da}")
 		s.append (".number4 { background-color:#ede0c8}")
 		s.append (".number8{ background-color:#f2b179}")
