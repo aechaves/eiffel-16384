@@ -34,6 +34,7 @@ feature {NONE} -- Execution
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
 			create Result.make
+			Result.add_javascript_url ("http://code.jquery.com/jquery-latest.min.js")
 			Result.set_title ("16384")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
@@ -78,7 +79,6 @@ feature {NONE} -- Execution
 			end
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
 			Result.add_javascript_content (main_script)
-			--Result.add_style ("css/board.css","all")
 		end
 
 feature {NONE} -- Initialization
@@ -160,7 +160,7 @@ feature {NONE} --Show board with html table
 	do
 		s := ""
 		s.append ("var app = angular.module('main',[]). ")
-		s.append("controller('BoardController',function($scope,$http) {")
+		s.append("controller('BoardController',function($scope) {")
 		s.append(" $scope.board = [")
 		from
 			i := 1
@@ -209,12 +209,22 @@ feature {NONE} --Show board with html table
 		s.append ("if (cellNumber==16384) { return {number16384:true};} ")
 		s.append ("}; ")
 		-- Key control function
+		s.append ("$scope.key = {};")
+		s.append ("$scope.keyOk = false;")
 		s.append ("$scope.KeyControl=function(ev){ ")
-		s.append ("if (ev.which==37) { $scope.pressed='a';   } ")
-		s.append ("if (ev.which==38) { $scope.pressed='w'; } ")
-		s.append ("if (ev.which==39) { $scope.pressed='d';} ")
-		s.append ("if (ev.which==40) { $scope.pressed='s';}  ")
+		s.append ("if (ev.which==37 || ev.which==65) { $scope.keyOk=true; $scope.key={user:'a'}; } ")
+		s.append ("if (ev.which==38 || ev.which==87) { $scope.keyOk=true; $scope.key={user:'w'}; } ")
+		s.append ("if (ev.which==39 || ev.which==68) { $scope.keyOk=true; $scope.key={user:'d'}; } ")
+		s.append ("if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; }  ")
+		s.append ("if ($scope.keyOk) { $.ajax({type : 'POST',url:'http://localhost:9999/',data:$scope.key,contentType:'json',headers: {Accept : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Content-Type': 'application/x-www-form-urlencoded'}}).done(function(data){document.open();document.write(data);document.close();})}")
 		s.append ("}; ")
+		-- Load form visibility
+		s.append ("$scope.formLoadVisibility=false; ")
+		s.append ("$scope.formSaveVisibility=false; ")
+		s.append ("$scope.ShowFormLoad=function(){ $scope.formLoadVisibility=!$scope.formLoadVisibility; $scope.formSaveVisibility=false; }; ")
+		s.append ("$scope.ShowFormSave=function(){ $scope.formSaveVisibility=!$scope.formSaveVisibility; $scope.formLoadVisibility=false; }; ")
+		s.append ("$scope.Load=function(){ $scope.formLoadVisibility=false;} ; ")
+		s.append ("$scope.Save=function(){ $scope.formSaveVisibility=false;} ; ")
 		s.append("})")
 		Result := s
 	end
@@ -223,7 +233,8 @@ feature {NONE} --Show board with html table
 	local
 		s : STRING
 	do
-		s:="</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)'>"
+		s := "</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)' >"
+		--s.append ("<link rel='stylesheet' type='text/css' href='./css/board.css'>")
 		s.append ("<h1>16384</h1>")
 		s.append ("<div class='wrapper'>")
 		s.append ("<table width="+"600"+" height="+"600"+">")
@@ -238,25 +249,25 @@ feature {NONE} --Show board with html table
 		s.append ("<td ng-class='CellColor({{row.cell8}})'>{{row.cell8}}</td>")
 		s.append ("</tr>")
 		s.append ("</table>")
+		s.append ("</div>")
 		s.append ("<br>")
-		s.append ("<form  action="+"/"+" method="+"POST"+">")
-		s.append ("<input type="+"text"+" name="+"user"+" value='{{pressed}}' >")
-		s.append ("<input type='submit' value='Mover'>")
-		s.append ("</form>")
 		-- User load
-		s.append ("<br>")
-		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<div class='wrapper'>")
+		s.append ("<center>")
+		s.append ("<button ng-click='ShowFormLoad()' >Load game</button>")
+		s.append ("<button ng-click='ShowFormSave()' >Save game</button>")
+		s.append ("<form ng-show='formLoadVisibility' action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"load_user"+">")
 		s.append ("<input type="+"password"+" name="+"load_pass"+">")
-		s.append ("<input type="+"submit"+" value="+"Load game"+">")
+		s.append ("<input ng-click='Load()' type="+"submit"+" value="+"Load game"+">")
 		s.append ("</form>")
 		-- User save
-		s.append ("<br>")
-		s.append ("<form action="+"/"+" method="+"POST"+">")
+		s.append ("<form ng-show='formSaveVisibility' action="+"/"+" method="+"POST"+">")
 		s.append ("<input type="+"text"+" name="+"save_user"+">")
 		s.append ("<input type="+"password"+" name="+"save_pass"+">")
-		s.append ("<input type="+"submit"+" value="+"Save game"+">")
+		s.append ("<input ng-click='Save()' type="+"submit"+" value="+"Save game"+">")
 		s.append ("</form>")
+		s.append ("</center>")
 		s.append ("</div>")
 		Result := s
 	end
@@ -266,12 +277,12 @@ feature {NONE} --Show board with html table
 		s : STRING
 	do
 		s:="<style>"
-		s.append ("h1 {text-align: center;color:#666;text-shadow:0px 2px 0px #fff;}")
+		s.append ("h1 {text-align: center;color:black;text-shadow:0px 2px 0px #fff;}")
 		s.append (".wrapper{width: 650px;margin: 0 auto;box-shadow: 5px 5px 5px #555;border-radius: 15px;padding: 10px;}")
 		s.append ("body {background: #ccc;font-family: "+"Open Sans"+", arial;}")
-		s.append ("table {max-width: 600px;height: 320px;border-collapse: collapse;border: 3px solid white;margin: 50px auto; background-color:white;table-layout: fixed;}")
-		s.append ("td {border-right: 3px solid white;padding: 10px;text-align: center;transition: all 0.2s;}")
-		s.append ("tr {border-bottom: 3px solid white;}")
+		s.append ("table {max-width: 600px;height: 400px;border-collapse: collapse;border: 3px solid #7E7575;margin: 25px auto;table-layout: fixed;}")
+		s.append ("td {border-right: 3px solid #7E7575;padding: 10px;text-align: center;transition: all 0.2s; color:#7E7575}")
+		s.append ("tr {border-bottom: 3px solid #7E7575;}")
 		s.append ("tr:last-child {border-bottom: 0px;}")
 		s.append ("td:last-child {border-right: 0px; }")
 		s.append ("</style>")
@@ -283,7 +294,7 @@ feature {NONE} --Show board with html table
 		s : STRING
 	do
 		s := "<style>"
-		s.append (".number0 { background-color:#C1BABA}")
+		s.append (".number0 { background-color:#7E7575}")
 		s.append (".number2 { background-color:#eee4da}")
 		s.append (".number4 { background-color:#ede0c8}")
 		s.append (".number8{ background-color:#f2b179}")
