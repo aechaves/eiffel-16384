@@ -32,6 +32,9 @@ feature {NONE} -- Execution
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
 			create Result.make
+			Result.add_javascript_url ("http://code.jquery.com/jquery-latest.min.js")
+			--Result.add_javascript_content("function getChoice(keyCode){var ret='';if (keyCode == 38)ret = 'w';if (keyCode == 40)ret = 's';if (keyCode == 39)ret = 'd';if (keyCode == 37)ret = 'a';return ret;}")
+			--Result.add_javascript_content ("$(document).keypress(function (e) {var key = getChoice(e.keyCode);if(key != ''){$.ajax({type : 'POST',url:'http://localhost:9999/',data:{user:key},contentType:'json',headers: {Accept : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Content-Type': 'application/x-www-form-urlencoded'}}).done(function(data){document.open();document.write(data);document.close();})}})")
 			Result.set_title ("16384")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
@@ -66,7 +69,6 @@ feature {NONE} -- Execution
 			end
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
 			Result.add_javascript_content (main_script)
-			--Result.add_style ("css/board.css","all")
 		end
 
 feature {NONE} -- Initialization
@@ -98,7 +100,7 @@ feature {NONE} --Show board with html table
 	do
 		s := ""
 		s.append ("var app = angular.module('main',[]). ")
-		s.append("controller('BoardController',function($scope,$http) {")
+		s.append("controller('BoardController',function($scope) {")
 		s.append(" $scope.board = [")
 		from
 			i := 1
@@ -147,12 +149,16 @@ feature {NONE} --Show board with html table
 		s.append ("if (cellNumber==16384) { return {number16384:true};} ")
 		s.append ("}; ")
 		-- Key control function
+		s.append ("$scope.key = {};")
+		s.append ("$scope.keyOk = false;")
 		s.append ("$scope.KeyControl=function(ev){ ")
-		s.append ("if (ev.which==37) { $scope.pressed='a';   } ")
-		s.append ("if (ev.which==38) { $scope.pressed='w'; } ")
-		s.append ("if (ev.which==39) { $scope.pressed='d';} ")
-		s.append ("if (ev.which==40) { $scope.pressed='s';}  ")
+		s.append ("if (ev.which==37 || ev.which==65) { $scope.keyOk=true; $scope.key={user:'a'}; } ")
+		s.append ("if (ev.which==38 || ev.which==87) { $scope.keyOk=true; $scope.key={user:'w'}; } ")
+		s.append ("if (ev.which==39 || ev.which==68) { $scope.keyOk=true; $scope.key={user:'d'}; } ")
+		s.append ("if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; }  ")
+		s.append ("if ($scope.keyOk) { $.ajax({type : 'POST',url:'http://localhost:9999/',data:$scope.key,contentType:'json',headers: {Accept : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Content-Type': 'application/x-www-form-urlencoded'}}).done(function(data){document.open();document.write(data);document.close();})}")
 		s.append ("}; ")
+
 		s.append("})")
 		Result := s
 	end
@@ -161,7 +167,8 @@ feature {NONE} --Show board with html table
 	local
 		s : STRING
 	do
-		s:="</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)'>"
+		s := "</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)' >"
+		--s.append ("<link rel='stylesheet' type='text/css' href='./css/board.css'>")
 		s.append ("<h1>16384</h1>")
 		s.append ("<div class='wrapper'>")
 		s.append ("<table width="+"600"+" height="+"600"+">")
@@ -177,10 +184,6 @@ feature {NONE} --Show board with html table
 		s.append ("</tr>")
 		s.append ("</table>")
 		s.append ("<br>")
-		s.append ("<form  action="+"/"+" method="+"POST"+">")
-		s.append ("<input type="+"text"+" name="+"user"+" value='{{pressed}}' >")
-		s.append ("<input type='submit' value='Mover'>")
-		s.append ("</form>")
 		-- User load
 		s.append ("<br>")
 		s.append ("<form action="+"/"+" method="+"POST"+">")
