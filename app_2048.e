@@ -35,6 +35,8 @@ feature {NONE} -- Execution
 			--| Since it is easier for building html page
 			create Result.make
 			Result.add_javascript_url ("http://code.jquery.com/jquery-latest.min.js")
+			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
+			Result.add_javascript_url ("https://raw.githubusercontent.com/aechaves/eiffel-16384/develop16384/js/main.js")
 			Result.set_title ("16384")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
@@ -77,8 +79,6 @@ feature {NONE} -- Execution
 
 				Result.set_body (html_body+style+cell_color_style)
 			end
-			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
-			Result.add_javascript_content (main_script)
 		end
 
 feature {NONE} -- Initialization
@@ -109,102 +109,15 @@ feature {NONE} -- Initialization
 
 feature {NONE} --Show board with html table
 
-	main_script : STRING
-	local
-		s : STRING
-		i,j : INTEGER
-	do
-		s := ""
-		s.append ("var app = angular.module('main',[]). ")
-		s.append("controller('BoardController',function($scope) {")
-		s.append(" $scope.board = [")
-		from
-			i := 1
-		until
-			i>controller.board.rows
-		loop
-			s.append (" { ")
-			from
-				j:=1
-			until
-				j>controller.board.columns
-			loop
-				--if (controller.board.elements.item (i, j).value=0) then
-				--	s.append ("cell"+j.out+":''")
-				--else
-					s.append ("cell"+j.out+":'"+controller.board.elements.item (i, j).value.out+"'")
-				--end
-				if (j<controller.board.columns) then
-					s.append (",")
-				end
-				j:=j+1
-			end
-			s.append (" }")
-			if (i<controller.board.rows) then
-				s.append (",")
-			end
-			i:=i+1
-		end
-		s.append(" ]; ")
-		-- Cell color function
-		s.append ("$scope.CellColor=function(cellNumber) { ")
-		s.append ("if (cellNumber==0) { return {number0:true};} ")
-		s.append ("if (cellNumber==2) { return {number2:true};} ")
-		s.append ("if (cellNumber==4) { return {number4:true};} ")
-		s.append ("if (cellNumber==8) { return {number8:true};} ")
-		s.append ("if (cellNumber==16) { return {number16:true};} ")
-		s.append ("if (cellNumber==32) { return {number32:true};} ")
-		s.append ("if (cellNumber==64) { return {number64:true};} ")
-		s.append ("if (cellNumber==128) { return {number128:true};} ")
-		s.append ("if (cellNumber==256) { return {number256:true};} ")
-		s.append ("if (cellNumber==512) { return {number512:true};} ")
-		s.append ("if (cellNumber==1024) { return {number1024:true};} ")
-		s.append ("if (cellNumber==2048) { return {number2048:true};} ")
-		s.append ("if (cellNumber==4096) { return {number4096:true};} ")
-		s.append ("if (cellNumber==8192) { return {number8192:true};} ")
-		s.append ("if (cellNumber==16384) { return {number16384:true};} ")
-		s.append ("}; ")
-		-- Key control function
-		s.append ("$scope.key = {};")
-		s.append ("$scope.keyOk = false;")
-		s.append ("$scope.KeyControl=function(ev){ ")
-		s.append ("if (ev.which==37 || ev.which==65) { $scope.keyOk=true; $scope.key={user:'a'}; } ")
-		s.append ("if (ev.which==38 || ev.which==87) { $scope.keyOk=true; $scope.key={user:'w'}; } ")
-		s.append ("if (ev.which==39 || ev.which==68) { $scope.keyOk=true; $scope.key={user:'d'}; } ")
-		s.append ("if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; }  ")
-		s.append ("if ($scope.keyOk) { $.ajax({type : 'POST',url:'http://localhost:9999/',data:$scope.key,contentType:'json',headers: {Accept : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8','Content-Type': 'application/x-www-form-urlencoded'}}).done(function(data){document.open();document.write(data);document.close();})}")
-		s.append ("}; ")
-		-- Load form visibility
-		s.append ("$scope.formLoadVisibility=false; ")
-		s.append ("$scope.formSaveVisibility=false; ")
-		s.append ("$scope.ShowFormLoad=function(){ $scope.formLoadVisibility=!$scope.formLoadVisibility; $scope.formSaveVisibility=false; }; ")
-		s.append ("$scope.ShowFormSave=function(){ $scope.formSaveVisibility=!$scope.formSaveVisibility; $scope.formLoadVisibility=false; }; ")
-		s.append ("$scope.Load=function(){ $scope.formLoadVisibility=false;} ; ")
-		s.append ("$scope.Save=function(){ $scope.formSaveVisibility=false;} ; ")
-		s.append("})")
-		Result := s
-	end
-
 	html_body : STRING
 	local
 		s : STRING
 	do
 		s := "</body><body ng-app="+"main"+" ng-controller="+"BoardController"+" ng-keydown='KeyControl($event)' >"
-		--s.append ("<link rel='stylesheet' type='text/css' href='./css/board.css'>")
+		--s.append ("<link rel='stylesheet' type='text/css' href='https://raw.githubusercontent.com/aechaves/eiffel-16384/develop16384/css/board.css'>")
 		s.append ("<h1>16384</h1>")
 		s.append ("<div class='wrapper'>")
-		s.append ("<table width="+"600"+" height="+"600"+">")
-		s.append ("<tr ng-repeat='row in board'>")
-		s.append ("<td ng-class='CellColor({{row.cell1}})'>{{row.cell1}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell2}})'>{{row.cell2}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell3}})'>{{row.cell3}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell4}})'>{{row.cell4}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell5}})'>{{row.cell5}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell6}})'>{{row.cell6}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell7}})'>{{row.cell7}}</td>")
-		s.append ("<td ng-class='CellColor({{row.cell8}})'>{{row.cell8}}</td>")
-		s.append ("</tr>")
-		s.append ("</table>")
+		s.append (controller.board.out)
 		s.append ("</div>")
 		s.append ("<br>")
 		-- User load
@@ -213,14 +126,14 @@ feature {NONE} --Show board with html table
 		s.append ("<button ng-click='ShowFormLoad()' >Load game</button>")
 		s.append ("<button ng-click='ShowFormSave()' >Save game</button>")
 		s.append ("<form ng-show='formLoadVisibility' action="+"/"+" method="+"POST"+">")
-		s.append ("<input type="+"text"+" name="+"load_user"+">")
-		s.append ("<input type="+"password"+" name="+"load_pass"+">")
+		s.append ("<input ng-click='Typing()' type="+"text"+" name="+"load_user"+" placeholder='nickname'>")
+		s.append ("<input type="+"password"+" name="+"load_pass"+" placeholder='password'>")
 		s.append ("<input ng-click='Load()' type="+"submit"+" value="+"Load game"+">")
 		s.append ("</form>")
 		-- User save
 		s.append ("<form ng-show='formSaveVisibility' action="+"/"+" method="+"POST"+">")
-		s.append ("<input type="+"text"+" name="+"save_user"+">")
-		s.append ("<input type="+"password"+" name="+"save_pass"+">")
+		s.append ("<input type="+"text"+" name="+"save_user"+" placeholder='nickname'>")
+		s.append ("<input type="+"password"+" name="+"save_pass"+" placeholder='password'>")
 		s.append ("<input ng-click='Save()' type="+"submit"+" value="+"Save game"+">")
 		s.append ("</form>")
 		s.append ("</center>")

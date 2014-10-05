@@ -155,32 +155,33 @@ feature -- Status report
 		end
 
 	out: STRING
-	-- provides a string representation of the board content.
+	-- provides representation in html table of the board content.
 		local
 			i: INTEGER
 			j: INTEGER
+			value : INTEGER
 			output: STRING
 		do
-
+			output:="<table width="+"600"+" height="+"600"+">"
 			from
 				i:= 1
-				output:=""
 			until
 				i> rows
 			loop
+				output.append ("<tr>")
 				from
 					j:= 1
 				until
 					j>columns
 				loop
-					output.append_string ("|")
-					output.append_string (elements.item (i, j).out)
+					value := elements.item (i, j).value
+					output.append_string ("<td ng-class='CellColor("+value.out+")'>"+value.out+"</td>")
 					j:=j+1
 				end
-					output.append_string ("|")
-					output.append_string("%N")
+					output.append_string ("</tr>")
 					i:=i+1
 			end
+			output.append ("</table>")
 			Result := output
 			ensure then
 				Result.count>0

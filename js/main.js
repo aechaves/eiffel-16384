@@ -21,43 +21,56 @@ var app = angular.module('main',[]).
 	}; 
 		
 	//Key control function
+	$scope.listeningKeys=true;
+	$scope.Typing=function() {
+		$scope.listeningKeys=false;
+	}
+
 	$scope.key = {};
 	$scope.keyOk = false;
 	$scope.KeyControl=function(ev){ 
-		if (ev.which==37 || ev.which==65) { $scope.keyOk=true; $scope.key={user:'a'}; } 
-		if (ev.which==38 || ev.which==87) { $scope.keyOk=true; $scope.key={user:'w'}; } 
-		if (ev.which==39 || ev.which==68) { $scope.keyOk=true; $scope.key={user:'d'}; } 
-		if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; } 
-		if ($scope.keyOk) { 
-			$http({ 
-				method: 'POST',
-				url:'http://localhost:9999/', 
-				data: $.param($scope.key),
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'} 
-			}).success(
-				function(data){
-					document.open();
-					document.write(data);
-					document.close();
-				}
-			); 
+		if ($scope.listeningKeys) {
+			if (ev.which==37 || ev.which==65) { $scope.keyOk=true; $scope.key={user:'a'}; } 
+			if (ev.which==38 || ev.which==87) { $scope.keyOk=true; $scope.key={user:'w'}; } 
+			if (ev.which==39 || ev.which==68) { $scope.keyOk=true; $scope.key={user:'d'}; } 
+			if (ev.which==40 || ev.which==83) { $scope.keyOk=true; $scope.key={user:'s'}; } 
+			if ($scope.keyOk) { 
+				$http({ 
+					method: 'POST',
+					url:'http://localhost:9999/', 
+					data: $.param($scope.key),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'} 
+				}).success(
+					function(data){
+						document.open();
+						document.write(data);
+						document.close();
+					}
+				); 
+			}
 		} 
 	}; 
 		
-	// Load form visibility
+	// Load and Save forms visibility
 	$scope.formLoadVisibility=false; 
 	$scope.formSaveVisibility=false; 
 	
 	$scope.ShowFormLoad=function(){ 
 		$scope.formLoadVisibility=!$scope.formLoadVisibility; 
+		if (!$scope.formSaveVisibility) {
+			$scope.listeningKeys=!$scope.listeningKeys;
+		}
 		$scope.formSaveVisibility=false; 
 	};
 
 	$scope.ShowFormSave=function(){ 
-		$scope.formSaveVisibility=!$scope.formSaveVisibility; 
+		$scope.formSaveVisibility=!$scope.formSaveVisibility;
+		if (!$scope.formLoadVisibility){
+			$scope.listeningKeys=!$scope.listeningKeys;
+		} 
 		$scope.formLoadVisibility=false; 
 	}; 
 
-	$scope.Load=function(){ $scope.formLoadVisibility=false;} ; 
-	$scope.Save=function(){ $scope.formSaveVisibility=false;} ; 
+	$scope.Load=function(){ $scope.formLoadVisibility=false; $scope.listeningKeys=true;}; 
+	$scope.Save=function(){ $scope.formSaveVisibility=false; $scope.listeningKeys=true;}; 
 })
