@@ -59,7 +59,7 @@ feature {NONE} -- Execution
 					-- and deserialize it so we can create a new controller with it.
 					database.select_user (load_user)
 					user := database.last_retrieved_user
-					if attached {BOARD_2048} deserialize(user.board) as user_board then
+					if attached {BOARD_2048} database.deserialize(user.board) as user_board then
 						create controller.make_with_board (user_board)
 					end
 
@@ -70,7 +70,7 @@ feature {NONE} -- Execution
 					-- and store it in the database.
 					user.set_nickname (save_user)
 					user.set_pass (save_pass)
-					user.set_board (serialize(controller.board))
+					user.set_board (database.serialize(controller.board))
 					database.insert_user (user)
 
 				end
@@ -106,50 +106,6 @@ feature {NONE} -- Initialization
 			Precursor
 		end
 
-feature {NONE} --Board serialization for database storing
-
-	-- Subsequent methods are taken from eiffelroom.com
-
-	serialize (a_object: ANY): STRING
-        	-- Serialize `a_object'.
-    require
-        a_object_not_void: a_object /= Void
-    local
-        l_sed_rw: SED_MEMORY_READER_WRITER
-        l_sed_ser: SED_RECOVERABLE_SERIALIZER
-        l_cstring: C_STRING
-        l_cnt: INTEGER
-    do
-        create l_sed_rw.make
-        l_sed_rw.set_for_writing
-        create l_sed_ser.make (l_sed_rw)
-        l_sed_ser.set_root_object (a_object)
-        l_sed_ser.encode
-            -- the 'count' gives us the number of bytes
-            -- we have to read and put into the string.
-        l_cnt := l_sed_rw.count
-        create l_cstring.make_by_pointer_and_count (l_sed_rw.buffer.item, l_cnt)
-        Result := l_cstring.substring (1, l_cnt)
-    ensure
-        serialize_not_void: Result /= Void
-    end
-
-	deserialize (a_string: STRING): ANY
-        	-- Deserialize `a_string'.
-    require
-        a_string_not_void: a_string /= Void
-    local
-        l_sed_rw: SED_MEMORY_READER_WRITER
-        l_sed_ser: SED_RECOVERABLE_DESERIALIZER
-        l_cstring: C_STRING
-    do
-        create l_cstring.make (a_string)
-        create l_sed_rw.make_with_buffer (l_cstring.managed_data)
-        l_sed_rw.set_for_reading
-        create l_sed_ser.make (l_sed_rw)
-        l_sed_ser.decode (True)
-        Result := l_sed_ser.last_decoded_object
-    end
 
 feature {NONE} --Show board with html table
 
