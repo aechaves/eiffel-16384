@@ -20,13 +20,17 @@ feature -- Test routines
 		local
 			user : USER_16384
 			ok, second_time : BOOLEAN
+			database: DB_16384
 		do
 			if not second_time then
 				ok := True
 				create user.make_with_nickname ("nonexistent_user")
-				user.load_game
+				create database.make
+				database.connect_to_database
+				database.select_user (user.nickname)
 				ok := False
 			end
+			database.disconnect
 			assert ("The routine has to fail", ok)
 		rescue
 			second_time := True
@@ -39,22 +43,32 @@ feature -- Test routines
 			--test for existent user
 		local
 			user : USER_16384
-			game : BOARD_2048
+			board : BOARD_2048
+			serialized_board: STRING
+			database: DB_16384
 		do
-			create user.make_new_user ("user_name", "user_surname", "user_nickname", "user_pwd")
-			create game.make_empty
-			game.set_cell (1,1,4)
-			game.set_cell (1,2,8)
-			user.save_game (game)
-			user.load_game
+			create user.make_new_user ("user_nickname", "user_pwd")
+			create board.make_empty
+			create database.make
+			board.set_cell (1,1,4)
+			board.set_cell (1,2,8)
+			serialized_board := database.serialize (board)
+			user.set_board(serialized_board)
+			-- Store the user
+			database.connect_to_database
+			database.insert_user (user)
+			-- Load the user
+			database.select_user (user.nickname)
+			user := database.last_retrieved_user
+			database.disconnect
 			-- Correct atributtes
-			assert("The name is correct", equal(user.name,"user_name"))
-			assert("The surname is correct", equal(user.surname,"user_surname"))
 			assert("The nickname is correct", equal(user.nickname,"user_nickname"))
 			assert("The password is correct", equal(user.password,"user_pwd"))
 			-- Correct board
-			assert("Correct cell 1", user.game.elements.item (1, 1).value=4)
-			assert("Correct cell 2", user.game.elements.item (1, 2).value=8)
+			if attached {BOARD_2048} database.deserialize (user.board) as deserialized_board then
+				assert("Correct cell 1", deserialized_board.elements.item (1, 1).value=4)
+				assert("Correct cell 2", deserialized_board.elements.item (1, 2).value=8)
+			end
 		end
 
 end

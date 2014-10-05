@@ -145,7 +145,7 @@ feature -- Control methods
 			end
 		end
 
-feature {HAS_UNFINISHED_GAME_AT_USER_2048, APP_2048}
+feature {HAS_UNFINISHED_GAME_AT_USER_2048,LOAD_GAME_AT_USER_2048, SAVE_GAME_AT_USER_2048, APP_2048}
 
 	set_nickname (nick: STRING)
 			--

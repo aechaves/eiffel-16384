@@ -20,15 +20,19 @@ feature -- Test routines
 			-- Should raise an exception.
 		local
 			user: USER_16384
-			board: BOARD_2048
+			board: STRING -- Serialized board
+			database: DB_16384
 			second_time, ok: BOOLEAN
 		do
-			create user.make_with_nickname ("johndoe")
+			create user.make_with_nick_and_pass ("johndoe","johnpass")
+			create database.make
 			if not second_time then
 				ok := True
-				user.save_game (board)
+				database.connect_to_database
+				database.insert_user (user)
 				ok := False
 			end
+			database.disconnect
 			assert ("You can't save a void board.", ok)
 			rescue
 			second_time := True
@@ -42,19 +46,26 @@ feature -- Test routines
 		-- Should return true
 		local
 			user, x: USER_16384
+			database: DB_16384
 			bool : BOOLEAN
 			obj : ANY
 			board: BOARD_2048
+			serialized_board: STRING -- Serialized board
 		do
 			create user.make_with_nickname ("johndoe")
 			create board.make
+			create database.make
 			board.set_cell (1, 2, 4)
-			user.save_game (board)
-			obj := user.retrieve_by_name (".saved_games/johndoe")
-			if attached {USER_16384} (obj) as aux then
-				x := aux
-			end
-			assert ("This test should pass", x /= void)
+
+			serialized_board := database.serialize(board)
+			user.set_board (serialized_board)
+			-- Store
+			database.connect_to_database
+			database.insert_user (user)
+			-- Retrieve
+			database.select_user (user.nickname)
+			database.disconnect
+			assert ("This test should pass", database.last_retrieved_user /= void)
 		end
 end
 

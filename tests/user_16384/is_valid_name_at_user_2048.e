@@ -19,7 +19,7 @@ feature
 			user : USER_16384
 		do
 			create user.make_for_test
-			assert ("name that starts with alpha must be correct", user.is_valid_name ("new_user"))
+			assert ("name that starts with alpha must be correct", user.is_valid_nickname ("new_user"))
 		end
 
 
@@ -29,7 +29,7 @@ feature
 			user : USER_16384
 		do
 			create user.make_for_test
-			assert ("name that starts with a number must be invalid", not user.is_valid_name ("1asdasd"))
+			assert ("name that starts with a number must be invalid", user.is_valid_nickname ("1asdasd"))
 		end
 
 	is_valid_name_with_empty_name
@@ -38,7 +38,7 @@ feature
 			user : USER_16384
 		do
 			create user.make_for_test
-			assert ("empty name must be invalid", not user.is_valid_name (""))
+			assert ("empty name must be invalid", not user.is_valid_nickname (""))
 		end
 
 	is_valid_name_with_void_name
@@ -48,7 +48,7 @@ feature
 			name: STRING
 		do
 			create user.make_for_test
-			assert ("void name must be invalid", not user.is_valid_name (name))
+			assert ("void name must be invalid", not user.is_valid_nickname (name))
 		end
 
 end
