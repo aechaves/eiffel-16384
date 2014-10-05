@@ -65,7 +65,7 @@ var app = angular.module('main',[]).
 
 	$scope.ShowFormSave=function(){ 
 		$scope.formSaveVisibility=!$scope.formSaveVisibility;
-		if ($scope.formLoadVisibility){
+		if (!$scope.formLoadVisibility){
 			$scope.listeningKeys=!$scope.listeningKeys;
 		} 
 		$scope.formLoadVisibility=false; 
