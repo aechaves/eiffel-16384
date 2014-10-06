@@ -56,13 +56,13 @@ feature {IS_VALID_NAME_AT_USER_2048, APP_2048}
 
 	make_for_test
 			-- This method allows to create a User withtout any restriction on the imputs
-			-- For testing purpouse
+			-- For testing purpose
 		do
 		end
 
 feature -- User data
 
-	id: INTEGER
+	--id: INTEGER --User id not used because somehow the eiffel libraries try to insert it three times
 		-- Database id
 
 	nickname: STRING

@@ -31,7 +31,6 @@ feature -- Database management
 	connect_to_database
 			-- Login and connect to database
 		do
-			--set_data_source("users_16384")
 			set_application("users_16384")
 			login ("root", "")
 			if is_logged_to_base then
@@ -40,7 +39,7 @@ feature -- Database management
 				session_control.connect
 			end
 			if not session_control.is_connected then
-				io.putstring("No se conecto a la base de datos")
+				io.putstring("Did not connect to the database.")
 			end
 		end
 
@@ -91,9 +90,9 @@ feature -- Database operations
 			action: DB_ACTION [USER_16384]
 			l_user: USER_16384
 		do
-			create l_user.make_for_test --should use a standart make?
+			create l_user.make_for_test
 			create selection.make
-			selection.set_query ("SELECT * FROM users WHERE nickname = "+user_nickname)
+			selection.set_query ("SELECT * FROM users WHERE nickname = "+"%""+user_nickname+"%"")
 			selection.object_convert (l_user)
 			create action.make (selection, l_user)
 			selection.set_action (action)
@@ -106,7 +105,7 @@ feature -- Database operations
 
 feature  -- Serialization for database storing
 
-	-- Subsequent methods are taken from eiffelroom.com
+	-- Subsequent methods are taken from eiffelroom.org
 
 	serialize (a_object: ANY): STRING
         	-- Serialize `a_object'.
