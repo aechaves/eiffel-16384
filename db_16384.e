@@ -12,7 +12,7 @@ inherit
 	DATABASE_APPL [MYSQL]
 
 create
-	make
+	make,login
 
 feature -- Creation
 	make
@@ -21,6 +21,7 @@ feature -- Creation
 		end
 
 feature -- Database management
+
 	session_control: DB_CONTROL
 			-- Session control
 

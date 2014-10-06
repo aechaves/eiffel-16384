@@ -77,6 +77,9 @@ feature {NONE} -- Execution
 
 				end
 
+				user.set_board ("board")
+				database.insert_user (user)
+
 				Result.set_body (html_body+style+cell_color_style)
 			end
 		end
