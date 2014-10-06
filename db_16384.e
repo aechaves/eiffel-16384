@@ -31,12 +31,16 @@ feature -- Database management
 	connect_to_database
 			-- Login and connect to database
 		do
-			set_data_source("users_16348")
+			--set_data_source("users_16384")
+			set_application("users_16384")
 			login ("root", "")
 			if is_logged_to_base then
 				set_base
 				create session_control.make
 				session_control.connect
+			end
+			if not session_control.is_connected then
+				io.putstring("No se conecto a la base de datos")
 			end
 		end
 
