@@ -30,8 +30,6 @@ feature {NONE} -- Execution
 
 	response (req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 			-- Computed response message.
-		local
-			restart : BOARD_2048
 		do
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
@@ -60,13 +58,11 @@ feature {NONE} -- Execution
 
 				if controller.board.is_winning_board then
 					Result.add_javascript_content("alert('YOU WIN');")
-					create restart.make
-					create controller.make_with_board (restart)
+					create controller.make
 				else
 					if controller.is_finished then
 						Result.add_javascript_content("alert('YOU LOSE');")
-						create restart.make
-						create controller.make_with_board (restart)
+						create controller.make
 					end
 				end
 
