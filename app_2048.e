@@ -30,6 +30,8 @@ feature {NONE} -- Execution
 
 	response (req: WSF_REQUEST): WSF_HTML_PAGE_RESPONSE
 			-- Computed response message.
+		local
+			restart : BOARD_2048
 		do
 			--| It is now returning a WSF_HTML_PAGE_RESPONSE
 			--| Since it is easier for building html page
@@ -37,6 +39,7 @@ feature {NONE} -- Execution
 			Result.add_javascript_url ("http://code.jquery.com/jquery-latest.min.js")
 			Result.add_javascript_url ("https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js")
 			Result.add_javascript_url ("https://raw.githubusercontent.com/aechaves/eiffel-16384/develop16384/js/main.js")
+			Result.add_style ("https://www.dropbox.com/s/xy3uqmnhkdbl5fr/board.css?dl=1", "")
 			Result.set_title ("16384")
 			--| Check if the request contains a parameter named "user"
 			--| this could be a query, or a form parameter
@@ -54,7 +57,20 @@ feature {NONE} -- Execution
 				if (l_user.is_equal ("s") and controller.board.can_move_down) then
 					controller.down
 				end
-				Result.set_body( html_body+style+cell_color_style )
+
+				if controller.board.is_winning_board then
+					Result.add_javascript_content("alert('YOU WIN');")
+					create restart.make
+					create controller.make_with_board (restart)
+				else
+					if controller.is_finished then
+						Result.add_javascript_content("alert('YOU LOSE');")
+						create restart.make
+						create controller.make_with_board (restart)
+					end
+				end
+
+				Result.set_body( html_body )
 			else
 				if (attached req.string_item ("load_user") as load_user) and (attached req.string_item ("load_pass") as load_pass) then
 					-- Here we load a serialized board from the database,
@@ -77,7 +93,7 @@ feature {NONE} -- Execution
 
 				end
 
-				Result.set_body (html_body+style+cell_color_style)
+				Result.set_body (html_body)
 			end
 		end
 
@@ -141,44 +157,4 @@ feature {NONE} --Show board with html table
 		Result := s
 	end
 
-	style : STRING
-	local
-		s : STRING
-	do
-		s:="<style>"
-		s.append ("h1 {text-align: center;color:black;text-shadow:0px 2px 0px #fff;}")
-		s.append (".wrapper{width: 650px;margin: 0 auto;box-shadow: 5px 5px 5px #555;border-radius: 15px;padding: 10px;}")
-		s.append ("body {background: #ccc;font-family: "+"Open Sans"+", arial;}")
-		s.append ("table {max-width: 600px;height: 400px;border-collapse: collapse;border: 3px solid #7E7575;margin: 25px auto;table-layout: fixed;}")
-		s.append ("td {border-right: 3px solid #7E7575;padding: 10px;text-align: center;transition: all 0.2s; color:#7E7575}")
-		s.append ("tr {border-bottom: 3px solid #7E7575;}")
-		s.append ("tr:last-child {border-bottom: 0px;}")
-		s.append ("td:last-child {border-right: 0px; }")
-		s.append ("</style>")
-		Result := s
-	end
-
-	cell_color_style : STRING
-	local
-		s : STRING
-	do
-		s := "<style>"
-		s.append (".number0 { background-color:#7E7575}")
-		s.append (".number2 { background-color:#eee4da}")
-		s.append (".number4 { background-color:#ede0c8}")
-		s.append (".number8{ background-color:#f2b179}")
-		s.append (".number16 { background-color:#f59563}")
-		s.append (".number32 { background-color:#f67c5f}")
-		s.append (".number64 { background-color:#f65e3b}")
-		s.append (".number128 { background-color:#edcf72}")
-		s.append (".number256{ background-color:#edcc61}")
-		s.append (".number512 { background-color:#edc850}")
-		s.append (".number1024{ background-color:#edc53f}")
-		s.append (".number2048 { background-color:#edc22e}")
-		s.append(".number4096 { background-color:#77a136}")
-		s.append(".number8192 { background-color:#2db388}")
-		s.append(".number16384 { background-color:#2d83b3}")
-		s.append ("</style>")
-		Result := s
-	end
 end
