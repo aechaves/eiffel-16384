@@ -1,6 +1,6 @@
 h1 {
     text-align: center;
-    color:#666;
+    color:black;
     text-shadow: 0px 2px 0px #fff;
 }
 
@@ -19,19 +19,19 @@ body {
 
 table { 
     max-width: 600px;
-    height: 320px;
+    height: 400px;
     border-collapse: collapse;
-    border: 3px solid white;
-    margin: 50px auto; 
-    background-color:white;
+    border: 3px solid #7E7575;
+    margin: 25px auto; 
     table-layout: fixed;
 }
 
 td {
-    border-right: 3px solid white;
+    border-right: 3px solid #7E7575;
     padding: 10px;
     text-align: center;
     transition: all 0.2s;
+    color:#7E7575;
 }
 
 td:last-child {
@@ -39,7 +39,7 @@ td:last-child {
 }
 
 tr {
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid #7E7575;
 }
 
 tr:last-child {
